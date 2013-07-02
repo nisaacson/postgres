@@ -74,6 +74,13 @@ execute "running initdb for data dir #{data_dir}" do
   not_if { File.exists?(data_dir)}
 end
 
+execute "link postgres binary from #{bin_dir}/postgres to /opt/local/bin/postgres" do
+  output_path "/opt/local/bin/postgres"
+  command "ln -s #{bin_dir}/postgres #{output_path}"
+  user os_user
+  not_if { File.exists?(output_path)}
+end
+
 template shell_script do
   source 'postgres-service.sh.erb'
   mode '0700'
